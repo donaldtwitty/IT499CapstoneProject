@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout | Purposeful Solutions</title>
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  
+</head>
+<body data-page="checkout">
+  <div id="site-header"></div>
+  <main id="main" class="container" role="main" tabindex="-1">
+    
+<div id="breadcrumb-container"></div>
+<div class="split">
+  <div>
+    <div class="h-eyebrow">Secure Checkout</div>
+    <h1>Complete Your Purchase</h1>
+    <p class="lead">Enter your details below. All transactions are secured with SSL encryption.</p>
+  </div>
+  <div>
+    <a class="btn" href="cart.html">Back to Cart</a>
+  </div>
+</div>
+<p id="page-message" class="help mt-10" aria-live="polite"></p>
+<div class="grid">
+  <div class="col-8">
+    <form class="card" id="checkout-form">
+      <div class="footer-title">Billing Information</div>
+      <div class="form-row mt-10">
+        <div class="field">
+          <label for="name">Full Name</label>
+          <input id="name" name="name" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required />
+        </div>
+      </div>
+      <hr class="sep"/>
+      <div class="footer-title">Delivery Information</div>
+      <p class="small">Digital products will be delivered instantly to your email.</p>
+      <div class="form-row mt-10">
+        <div class="field">
+          <label for="address">Address</label>
+          <input id="address" name="address" autocomplete="street-address" required />
+        </div>
+        <div class="field">
+          <label for="city">City</label>
+          <input id="city" name="city" autocomplete="address-level2" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="state">State</label>
+          <select id="state" name="state" required>
+            <option value="" disabled selected>Select</option>
+            <option>TX</option><option>CA</option><option>VA</option><option>FL</option><option>NY</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="zip">ZIP</label>
+          <input id="zip" name="zip" inputmode="numeric" pattern="\d{5}" placeholder="12345" required />
+        </div>
+      </div>
+
+      <hr class="sep"/>
+      <div class="footer-title">Payment Method</div>
+      <div class="form-row mt-10">
+        <div class="field">
+          <label for="pay-method">Method</label>
+          <select id="pay-method" name="pay-method" required>
+            <option>Card</option>
+            <option>PayPal</option>
+            <option>Apple Pay</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="card">Card Number</label>
+          <input id="card" name="card" inputmode="numeric" placeholder="0000 0000 0000 0000" required />
+          <div class="help">Secure SSL encrypted payment processing.</div>
+        </div>
+      </div>
+
+      <div class="split mt-12">
+        <button class="btn primary" type="submit">Complete Purchase</button>
+        <a class="btn" href="products.html">Continue Shopping</a>
+      </div>
+    </form>
+  </div>
+  <div class="col-4">
+    <div class="card">
+      <div class="footer-title">Order Summary</div>
+      <div id="checkout-summary" class="mt-10"></div>
+    </div>
+  </div>
+</div>
+
+  </main>
+  <div id="site-footer"></div>
+
+  <script type="module" src="assets/js/common.js"></script>
+  <script type="module" src="assets/js/pages.js"></script>
+</body>
+</html>

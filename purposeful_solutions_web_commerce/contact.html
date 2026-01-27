@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Support | Purposeful Solutions</title>
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  
+</head>
+<body data-page="contact">
+  <div id="site-header"></div>
+  <main id="main" class="container" role="main" tabindex="-1">
+    
+<div class="h-eyebrow">Customer Support</div>
+<h1>Get Help With Your Order</h1>
+
+<div class="grid">
+  <div class="col-6">
+    <form class="card" id="contact-form">
+      <div class="footer-title">Send a Message</div>
+      <p class="small">Response time: Under 24 hours (usually within 4 hours)</p>
+      <div class="form-row mt-10">
+        <div class="field">
+          <label for="cname">Name</label>
+          <input id="cname" required />
+        </div>
+        <div class="field">
+          <label for="cemail">Email</label>
+          <input id="cemail" type="email" required />
+        </div>
+      </div>
+      <div class="field mt-10">
+        <label for="csubject">Subject</label>
+        <select id="csubject" required>
+          <option value="">Select a topic</option>
+          <option>Download Issue</option>
+          <option>Refund Request</option>
+          <option>Technical Problem</option>
+          <option>Billing Question</option>
+          <option>Product Question</option>
+        </select>
+      </div>
+      <div class="field mt-10">
+        <label for="cmsg">Message</label>
+        <textarea id="cmsg" placeholder="Include your order ID if applicable" required></textarea>
+      </div>
+      <button class="btn primary" type="submit">Send Message</button>
+      <p class="help mt-10" id="contact-note" aria-live="polite"></p>
+    </form>
+  </div>
+  <div class="col-6">
+    <div class="card">
+      <div class="footer-title">Quick Links</div>
+      <p class="small">Find answers faster:</p>
+      <div class="mt-12">
+        <a class="btn" href="faq.html" style="width: 100%; margin-bottom: 10px;">View FAQ</a>
+        <a class="btn" href="order-status.html" style="width: 100%; margin-bottom: 10px;">Track Order</a>
+        <a class="btn" href="products.html" style="width: 100%;">Browse Products</a>
+      </div>
+      <hr class="sep"/>
+      <div class="footer-title">Contact Information</div>
+      <p class="small mt-10">
+        <strong>Email:</strong> support@purposefulsolutions.com<br/>
+        <strong>Response Time:</strong> Under 24 hours<br/>
+        <strong>Refunds:</strong> Processed within 3-5 business days
+      </p>
+      <hr class="sep"/>
+      <div class="footer-title">Before Contacting Us</div>
+      <p class="small mt-10">
+        Have your order ID ready for faster support. You can find it in your purchase confirmation email or on the <a href="order-status.html">Order Status</a> page.
+      </p>
+    </div>
+  </div>
+</div>
+
+  </main>
+  <div id="site-footer"></div>
+
+  <script type="module" src="assets/js/common.js"></script>
+  <script type="module" src="assets/js/pages.js"></script>
+</body>
+</html>
