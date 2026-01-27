@@ -35,22 +35,34 @@ function updateQty(id, qty){
   setCart(cart);
 }
 
-function calcTotals(){
+function calcTotals(discountCode = null){
   const cart = getCart();
   const items = cart.map(i => {
     const p = findProduct(i.id);
     return { ...i, product: p, line: (p ? p.price : 0) * i.qty };
   });
   const subtotal = items.reduce((s, x) => s + x.line, 0);
-  const tax = subtotal * 0.0825; // example tax rate
-  const total = subtotal + tax;
-  return { items, subtotal, tax, total };
+  
+  // Apply discount
+  let discount = 0;
+  const validCodes = {
+    'SAVE20': 0.20,
+    'WELCOME10': 0.10,
+    'SAVE15': 0.15
+  };
+  if(discountCode && validCodes[discountCode.toUpperCase()]){
+    discount = subtotal * validCodes[discountCode.toUpperCase()];
+  }
+  
+  const tax = (subtotal - discount) * 0.0825; // example tax rate
+  const total = subtotal - discount + tax;
+  return { items, subtotal, discount, tax, total, discountCode };
 }
 
-function renderMiniSummary(targetId){
+function renderMiniSummary(targetId, discountCode = null){
   const el = document.getElementById(targetId);
   if(!el) return;
-  const { items, subtotal, tax, total } = calcTotals();
+  const { items, subtotal, discount, tax, total } = calcTotals(discountCode);
   if(items.length === 0){
     el.innerHTML = `<p class="muted">Your cart is empty.</p>`;
     return;
@@ -73,6 +85,11 @@ function renderMiniSummary(targetId){
     <div class="split" style="margin-top:12px;">
       <div class="muted">Subtotal</div><div class="price">${currency(subtotal)}</div>
     </div>
+    ${discount > 0 ? `
+    <div class="split">
+      <div class="muted">Discount</div><div class="price" style="color: #16a34a;">-${currency(discount)}</div>
+    </div>
+    ` : ''}
     <div class="split">
       <div class="muted">Estimated Tax</div><div class="price">${currency(tax)}</div>
     </div>
@@ -289,6 +306,8 @@ function handleCheckout(){
   const form = document.getElementById('checkout-form');
   if(!form) return;
   
+  let appliedDiscount = null;
+  
   // Check if cart is empty on page load
   const cart = getCart();
   if(cart.length === 0){
@@ -303,9 +322,38 @@ function handleCheckout(){
   
   renderMiniSummary('checkout-summary');
   
+  // Handle discount code
+  const applyBtn = document.getElementById('apply-discount');
+  const discountInput = document.getElementById('discount-code');
+  const discountMsg = document.getElementById('discount-message');
+  
+  if(applyBtn && discountInput && discountMsg){
+    applyBtn.addEventListener('click', () => {
+      const code = discountInput.value.trim().toUpperCase();
+      if(!code){
+        discountMsg.textContent = 'Please enter a discount code.';
+        discountMsg.style.color = '#dc2626';
+        return;
+      }
+      
+      const validCodes = ['SAVE20', 'WELCOME10', 'SAVE15'];
+      if(validCodes.includes(code)){
+        appliedDiscount = code;
+        renderMiniSummary('checkout-summary', appliedDiscount);
+        discountMsg.textContent = `✓ Discount code "${code}" applied successfully!`;
+        discountMsg.style.color = '#16a34a';
+        applyBtn.disabled = true;
+        discountInput.disabled = true;
+      } else {
+        discountMsg.textContent = 'Invalid discount code. Please try again.';
+        discountMsg.style.color = '#dc2626';
+      }
+    });
+  }
+  
   // Expose function globally for cart updates
   window.renderCheckoutSummary = () => {
-    renderMiniSummary('checkout-summary');
+    renderMiniSummary('checkout-summary', appliedDiscount);
     const currentCart = getCart();
     if(currentCart.length === 0){
       const msg = document.getElementById('page-message');
@@ -356,7 +404,7 @@ function handleCheckout(){
         method: document.getElementById('pay-method').value,
         last4: (document.getElementById('card').value.trim().slice(-4) || '0000'),
       },
-      totals: calcTotals(),
+      totals: calcTotals(appliedDiscount),
       status: "Processing"
     };
     localStorage.setItem('ps_last_order', JSON.stringify(payload));
