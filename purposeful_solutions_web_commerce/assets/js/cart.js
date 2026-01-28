@@ -68,7 +68,7 @@ function renderMiniSummary(targetId, discountCode = null){
     return;
   }
   el.innerHTML = `
-    <table class="table" aria-label="Cart summary">
+    <table class="table checkout-summary-table" aria-label="Cart summary">
       <thead>
         <tr><th>Item</th><th>Qty</th><th>Line</th></tr>
       </thead>

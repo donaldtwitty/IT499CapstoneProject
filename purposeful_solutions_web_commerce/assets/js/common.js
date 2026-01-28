@@ -54,7 +54,6 @@ function showConfirmModal(message, onConfirm){
   `;
   document.body.appendChild(overlay);
   
-  const modal = overlay.querySelector('.modal');
   const cancelBtn = overlay.querySelector('#modal-cancel');
   const confirmBtn = overlay.querySelector('#modal-confirm');
   
@@ -62,17 +61,18 @@ function showConfirmModal(message, onConfirm){
     overlay.remove();
   };
   
-  cancelBtn.addEventListener('click', close);
+  if(cancelBtn) cancelBtn.addEventListener('click', close);
   overlay.addEventListener('click', (e) => {
     if(e.target === overlay) close();
   });
   
-  confirmBtn.addEventListener('click', () => {
-    onConfirm();
-    close();
-  });
-  
-  confirmBtn.focus();
+  if(confirmBtn){
+    confirmBtn.addEventListener('click', () => {
+      onConfirm();
+      close();
+    });
+    confirmBtn.focus();
+  }
 }
 
 function showSuccessModal(message){
@@ -95,12 +95,13 @@ function showSuccessModal(message){
     overlay.remove();
   };
   
-  okBtn.addEventListener('click', close);
+  if(okBtn){
+    okBtn.addEventListener('click', close);
+    okBtn.focus();
+  }
   overlay.addEventListener('click', (e) => {
     if(e.target === overlay) close();
   });
-  
-  okBtn.focus();
   
   // Auto-close after 2 seconds
   setTimeout(close, 2000);
@@ -184,10 +185,14 @@ function injectHeaderFooter(){
       });
       
       // Close menu on window resize if open
+      let resizeTimeout;
       window.addEventListener('resize', () => {
-        if(window.innerWidth > 980 && navLinks.classList.contains('active')){
-          closeMenu();
-        }
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if(window.innerWidth > 980 && navLinks.classList.contains('active')){
+            closeMenu();
+          }
+        }, 100);
       });
     }
   }
