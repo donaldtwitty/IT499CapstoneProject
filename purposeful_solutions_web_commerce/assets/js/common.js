@@ -120,7 +120,12 @@ function injectHeaderFooter(){
             <a class="brand" href="index.html" aria-label="Purposeful Solutions home">
               <img src="assets/img/logo.png" alt="Purposeful Solutions" class="logo" />
             </a>
-            <nav class="nav-links" aria-label="Primary">
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            <nav class="nav-links" id="nav-links" aria-label="Primary">
               <a href="index.html" data-nav="index">Home</a>
               <a href="products.html" data-nav="products">Shop</a>
               <a href="cart.html" data-nav="cart">Cart <span class="badge" data-cart-badge>0</span></a>
@@ -137,7 +142,54 @@ function injectHeaderFooter(){
           </div>
         </div>
       </header>
+      <div class="nav-overlay" id="nav-overlay"></div>
     `;
+    
+    // Hamburger menu functionality
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    const navOverlay = document.getElementById('nav-overlay');
+    
+    const closeMenu = () => {
+      hamburger.classList.remove('active');
+      navLinks.classList.remove('active');
+      navOverlay.classList.remove('active');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+    
+    const openMenu = () => {
+      hamburger.classList.add('active');
+      navLinks.classList.add('active');
+      navOverlay.classList.add('active');
+      hamburger.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    };
+    
+    if(hamburger && navLinks && navOverlay){
+      hamburger.addEventListener('click', () => {
+        if(navLinks.classList.contains('active')){
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+      
+      // Close menu when clicking overlay
+      navOverlay.addEventListener('click', closeMenu);
+      
+      // Close menu when clicking nav links
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+      
+      // Close menu on window resize if open
+      window.addEventListener('resize', () => {
+        if(window.innerWidth > 980 && navLinks.classList.contains('active')){
+          closeMenu();
+        }
+      });
+    }
   }
 
   if(footerTarget){
