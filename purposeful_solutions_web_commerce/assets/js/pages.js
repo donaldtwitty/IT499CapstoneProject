@@ -7,9 +7,22 @@ function handleContact(){
   if(!form || !note) return;
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('cname').value.trim();
-    const email = document.getElementById('cemail').value.trim();
-    const msg = document.getElementById('cmsg').value.trim();
+    
+    // Verify user interaction
+    if(!e.isTrusted){
+      note.textContent = 'Invalid request.';
+      note.className = 'notice danger';
+      return;
+    }
+    
+    const nameEl = document.getElementById('cname');
+    const emailEl = document.getElementById('cemail');
+    const msgEl = document.getElementById('cmsg');
+    if(!nameEl || !emailEl || !msgEl) return;
+    
+    const name = nameEl.value.trim();
+    const email = emailEl.value.trim();
+    const msg = msgEl.value.trim();
     if(!name || !email || !msg){
       note.textContent = 'Please complete all fields.';
       note.className = 'notice danger';
@@ -17,7 +30,11 @@ function handleContact(){
     }
     note.textContent = 'Message sent! Our support team will respond within 24 hours.';
     note.className = 'notice';
-    form.reset();
+    try{
+      form.reset();
+    }catch(e){
+      console.error('Form reset error:', e);
+    }
   });
 }
 
@@ -107,28 +124,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   addBreadcrumbs();
 
-  if(page === 'products'){
-    renderProductsGrid('products-grid');
-  }
-  if(page === 'product'){
-    renderProductDetail();
-  }
-  if(page === 'cart'){
-    renderCartPage();
-  }
-  if(page === 'checkout'){
-    handleCheckout();
-  }
-  if(page === 'confirmation'){
-    renderConfirmation();
-  }
-  if(page === 'order-status'){
-    handleOrderLookup();
-  }
-  if(page === 'contact'){
-    handleContact();
-  }
-  if(page === 'index'){
-    renderFeaturedProducts();
+  switch(page){
+    case 'products':
+      renderProductsGrid('products-grid');
+      break;
+    case 'product':
+      renderProductDetail();
+      break;
+    case 'cart':
+      renderCartPage();
+      break;
+    case 'checkout':
+      handleCheckout();
+      break;
+    case 'confirmation':
+      renderConfirmation();
+      break;
+    case 'order-status':
+      handleOrderLookup();
+      break;
+    case 'contact':
+      handleContact();
+      break;
+    case 'index':
+      renderFeaturedProducts();
+      break;
   }
 });

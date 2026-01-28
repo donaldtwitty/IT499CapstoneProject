@@ -1,5 +1,5 @@
-// CTA Modal
-const showCTAModal = () => {
+function showCTAModal() {
+  if(document.querySelector('.modal-overlay')) return;
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.innerHTML = `
@@ -7,14 +7,21 @@ const showCTAModal = () => {
       <h3>🎁 Special Offer Just For You!</h3>
       <p>Get <strong>20% OFF</strong> your first purchase. Don't miss out on premium digital products at unbeatable prices!</p>
       <div class="modal-actions">
-        <button class="btn" onclick="this.closest('.modal-overlay').remove()">Maybe Later</button>
+        <button class="btn" id="cta-later">Maybe Later</button>
         <a href="products.html" class="btn primary">Shop Now →</a>
       </div>
     </div>
   `;
   
+  const laterBtn = overlay.querySelector('#cta-later');
+  if(laterBtn){
+    laterBtn.addEventListener('click', (e) => {
+      if(e.isTrusted) overlay.remove();
+    });
+  }
+  
   overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) overlay.remove();
+    if (e.target === overlay && e.isTrusted) overlay.remove();
   });
   
   document.body.appendChild(overlay);

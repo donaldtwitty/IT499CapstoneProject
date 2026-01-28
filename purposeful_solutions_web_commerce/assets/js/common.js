@@ -1,5 +1,13 @@
+const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
 function currency(n){
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
+  try{
+    const num = Number(n);
+    if(isNaN(num)) return '$0.00';
+    return currencyFormatter.format(num);
+  }catch(e){
+    return '$0.00';
+  }
 }
 
 function getCart(){
@@ -19,14 +27,14 @@ function cartCount(){
 }
 
 function updateCartBadge(){
+  const count = cartCount();
   const badge = document.querySelector('[data-cart-badge]');
   if(badge){
-    badge.textContent = String(cartCount());
+    badge.textContent = String(count);
   }
   // Update checkout button state
   const checkoutBtn = document.getElementById('btn-checkout');
   if(checkoutBtn){
-    const count = cartCount();
     if(count === 0){
       checkoutBtn.style.opacity = '0.5';
       checkoutBtn.style.pointerEvents = 'none';
@@ -40,21 +48,39 @@ function updateCartBadge(){
 }
 
 function showConfirmModal(message, onConfirm){
+  if(typeof message !== 'string') message = String(message);
+  if(typeof onConfirm !== 'function') return;
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
-  overlay.innerHTML = `
-    <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
-      <h3 id="modal-title">Confirm Action</h3>
-      <p>${message}</p>
-      <div class="modal-actions">
-        <button class="btn" id="modal-cancel">Cancel</button>
-        <button class="btn danger" id="modal-confirm">Confirm</button>
-      </div>
-    </div>
-  `;
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-labelledby', 'modal-title');
+  modal.setAttribute('aria-modal', 'true');
+  
+  const title = document.createElement('h3');
+  title.id = 'modal-title';
+  title.textContent = 'Confirm Action';
+  
+  const messageP = document.createElement('p');
+  messageP.textContent = message;
+  
+  const actions = document.createElement('div');
+  actions.className = 'modal-actions';
+  actions.innerHTML = '<button class="btn" id="modal-cancel">Cancel</button><button class="btn danger" id="modal-confirm">Confirm</button>';
+  
+  modal.appendChild(title);
+  modal.appendChild(messageP);
+  modal.appendChild(actions);
+  overlay.appendChild(modal);
+  
+  // Prevent automated/programmatic clicks
+  let userInteracted = false;
+  overlay.addEventListener('mousedown', () => { userInteracted = true; });
+  overlay.addEventListener('touchstart', () => { userInteracted = true; });
+  
   document.body.appendChild(overlay);
   
-  const modal = overlay.querySelector('.modal');
   const cancelBtn = overlay.querySelector('#modal-cancel');
   const confirmBtn = overlay.querySelector('#modal-confirm');
   
@@ -62,31 +88,57 @@ function showConfirmModal(message, onConfirm){
     overlay.remove();
   };
   
-  cancelBtn.addEventListener('click', close);
+  if(cancelBtn) cancelBtn.addEventListener('click', close);
   overlay.addEventListener('click', (e) => {
     if(e.target === overlay) close();
   });
   
-  confirmBtn.addEventListener('click', () => {
-    onConfirm();
-    close();
-  });
-  
-  confirmBtn.focus();
+  if(confirmBtn){
+    confirmBtn.addEventListener('click', () => {
+      if(!userInteracted) return;
+      try{
+        onConfirm();
+        close();
+      }catch(e){
+        console.error('Error in confirm callback:', e);
+        close();
+      }
+    });
+    confirmBtn.focus();
+  }
 }
 
 function showSuccessModal(message){
+  if(typeof message !== 'string') message = String(message);
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
-  overlay.innerHTML = `
-    <div class="modal success" role="dialog" aria-labelledby="modal-title" aria-modal="true">
-      <h3 id="modal-title">✓ Success</h3>
-      <p>${message}</p>
-      <div class="modal-actions">
-        <button class="btn primary" id="modal-ok">OK</button>
-      </div>
-    </div>
-  `;
+  const modal = document.createElement('div');
+  modal.className = 'modal success';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-labelledby', 'modal-title');
+  modal.setAttribute('aria-modal', 'true');
+  
+  const title = document.createElement('h3');
+  title.id = 'modal-title';
+  title.textContent = '✓ Success';
+  
+  const messageP = document.createElement('p');
+  messageP.textContent = message;
+  
+  const actions = document.createElement('div');
+  actions.className = 'modal-actions';
+  actions.innerHTML = '<button class="btn primary" id="modal-ok">OK</button>';
+  
+  modal.appendChild(title);
+  modal.appendChild(messageP);
+  modal.appendChild(actions);
+  overlay.appendChild(modal);
+  
+  // Prevent automated/programmatic clicks
+  let userInteracted = false;
+  overlay.addEventListener('mousedown', () => { userInteracted = true; });
+  overlay.addEventListener('touchstart', () => { userInteracted = true; });
+  
   document.body.appendChild(overlay);
   
   const okBtn = overlay.querySelector('#modal-ok');
@@ -95,12 +147,13 @@ function showSuccessModal(message){
     overlay.remove();
   };
   
-  okBtn.addEventListener('click', close);
+  if(okBtn){
+    okBtn.addEventListener('click', close);
+    okBtn.focus();
+  }
   overlay.addEventListener('click', (e) => {
     if(e.target === overlay) close();
   });
-  
-  okBtn.focus();
   
   // Auto-close after 2 seconds
   setTimeout(close, 2000);
@@ -120,7 +173,12 @@ function injectHeaderFooter(){
             <a class="brand" href="index.html" aria-label="Purposeful Solutions home">
               <img src="assets/img/logo.png" alt="Purposeful Solutions" class="logo" />
             </a>
-            <nav class="nav-links" aria-label="Primary">
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            <nav class="nav-links" id="nav-links" aria-label="Primary">
               <a href="index.html" data-nav="index">Home</a>
               <a href="products.html" data-nav="products">Shop</a>
               <a href="cart.html" data-nav="cart">Cart <span class="badge" data-cart-badge>0</span></a>
@@ -137,7 +195,58 @@ function injectHeaderFooter(){
           </div>
         </div>
       </header>
+      <div class="nav-overlay" id="nav-overlay"></div>
     `;
+    
+    // Hamburger menu functionality
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    const navOverlay = document.getElementById('nav-overlay');
+    
+    const closeMenu = () => {
+      hamburger.classList.remove('active');
+      navLinks.classList.remove('active');
+      navOverlay.classList.remove('active');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+    
+    const openMenu = () => {
+      hamburger.classList.add('active');
+      navLinks.classList.add('active');
+      navOverlay.classList.add('active');
+      hamburger.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    };
+    
+    if(hamburger && navLinks && navOverlay){
+      hamburger.addEventListener('click', () => {
+        if(navLinks.classList.contains('active')){
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+      
+      // Close menu when clicking overlay
+      navOverlay.addEventListener('click', closeMenu);
+      
+      // Close menu when clicking nav links
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+      
+      // Close menu on window resize if open
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if(window.innerWidth > 980 && navLinks.classList.contains('active')){
+            closeMenu();
+          }
+        }, 100);
+      });
+    }
   }
 
   if(footerTarget){
@@ -196,11 +305,10 @@ function injectHeaderFooter(){
       showConfirmModal('Are you sure you want to clear your entire cart?', () => {
         setCart([]);
         showSuccessModal('Cart cleared successfully.');
-        // If we're on cart page, re-render
-        if(document.body.getAttribute('data-page') === 'cart'){
+        const currentPage = document.body.getAttribute('data-page');
+        if(currentPage === 'cart'){
           import('./cart.js').then(m => m.renderCartPage());
         }
-        // If we're on checkout page, re-render summary
         if(typeof window.renderCheckoutSummary === 'function'){ window.renderCheckoutSummary(); }
       });
     });
