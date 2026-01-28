@@ -6,8 +6,11 @@ function initSearch() {
   if (!searchInput) return;
 
   let searchTimeout;
+  let userInitiated = false;
   
+  searchInput.addEventListener('focus', () => { userInitiated = true; });
   searchInput.addEventListener('input', (e) => {
+    if(!userInitiated) return;
     const query = e.target.value.toLowerCase().trim();
     
     // Clear previous timeout
@@ -37,6 +40,7 @@ function initSearch() {
   // Handle Enter key for immediate search
   searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
+      if(!userInitiated) return;
       e.preventDefault();
       const query = e.target.value.toLowerCase().trim();
       if (query && !window.location.pathname.includes('products.html')) {
@@ -57,6 +61,7 @@ function initSearch() {
 
 function filterProducts(query) {
   const products = document.querySelectorAll('.product');
+  const msg = document.getElementById('page-message');
   let visibleCount = 0;
   
   products.forEach(product => {
@@ -69,8 +74,6 @@ function filterProducts(query) {
     if(matches) visibleCount++;
   });
   
-  // Show message if no products match
-  const msg = document.getElementById('page-message');
   if(msg){
     if(visibleCount === 0){
       msg.textContent = `No products found matching "${query}". Try a different search term.`;
@@ -86,9 +89,10 @@ function filterProducts(query) {
 function renderRating(rating, reviews) {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 >= 0.5;
+  const TOTAL_STARS = 5;
   
   let stars = '';
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < TOTAL_STARS; i++) {
     if (i < fullStars) {
       stars += '<span class="star filled">★</span>';
     } else if (i === fullStars && hasHalfStar) {
@@ -108,11 +112,15 @@ function renderRating(rating, reviews) {
 
 // Breadcrumb generation
 function renderBreadcrumb(items) {
+  if(!Array.isArray(items)) return '';
   return `
     <nav class="breadcrumb" aria-label="Breadcrumb">
-      ${items.map(item => 
-        item.url ? `<span><a href="${item.url}">${item.label}</a></span>` : `<span>${item.label}</span>`
-      ).join('')}
+      ${items.map(item => {
+        if(!item || typeof item !== 'object') return '';
+        const label = String(item.label || '');
+        const url = item.url ? String(item.url) : null;
+        return url ? `<span><a href="${url}">${label}</a></span>` : `<span>${label}</span>`;
+      }).join('')}
     </nav>
   `;
 }

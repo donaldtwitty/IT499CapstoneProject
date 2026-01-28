@@ -24,6 +24,7 @@ function removeFromCart(id){
 }
 
 function updateQty(id, qty){
+  if(typeof qty !== 'number' || isNaN(qty) || qty < 0) return;
   const cart = getCart();
   const item = cart.find(i => i.id === id);
   if(!item) return;
@@ -67,6 +68,7 @@ function renderMiniSummary(targetId, discountCode = null){
     el.innerHTML = `<p class="muted">Your cart is empty.</p>`;
     return;
   }
+  const escapeHtml = (str) => String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   el.innerHTML = `
     <table class="table checkout-summary-table" aria-label="Cart summary">
       <thead>
@@ -75,7 +77,7 @@ function renderMiniSummary(targetId, discountCode = null){
       <tbody>
         ${items.map(x => `
           <tr>
-            <td>${x.product?.name ?? x.id}</td>
+            <td>${escapeHtml(x.product?.name ?? x.id)}</td>
             <td>${x.qty}</td>
             <td>${currency(x.line)}</td>
           </tr>
@@ -103,12 +105,13 @@ function renderMiniSummary(targetId, discountCode = null){
 function renderProductsGrid(targetId){
   const el = document.getElementById(targetId);
   if(!el) return;
+  const escapeHtml = (str) => String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   el.innerHTML = PRODUCTS.map(p => `
-    <article class="product" data-category="${p.category}" data-tags="${(p.tags || []).join(' ')}" aria-label="${p.name}">
-      ${p.badge ? `<div class="product-badge ${p.badge}">${p.badge === 'bestseller' ? 'Best Seller' : p.badge === 'sale' ? 'Sale' : 'New'}</div>` : ''}
-      <div class="thumb" style="background-image: url('${p.image || ''}'); background-size: cover; background-position: center;" aria-hidden="true"></div>
+    <article class="product" data-category="${escapeHtml(p.category)}" data-tags="${(p.tags || []).map(t => escapeHtml(t)).join(' ')}" aria-label="${escapeHtml(p.name)}">
+      ${p.badge ? `<div class="product-badge ${escapeHtml(p.badge)}">${p.badge === 'bestseller' ? 'Best Seller' : p.badge === 'sale' ? 'Sale' : 'New'}</div>` : ''}
+      <div class="thumb" style="background-image: url('${escapeHtml(p.image || '')}'); background-size: cover; background-position: center;" aria-hidden="true"></div>
       <div class="body">
-        <h3>${p.name}</h3>
+        <h3>${escapeHtml(p.name)}</h3>
         <div class="price">
           ${currency(p.price)}
           ${p.oldPrice ? `<span class="price-old">${currency(p.oldPrice)}</span>` : ''}
@@ -116,13 +119,13 @@ function renderProductsGrid(targetId){
         </div>
         ${p.rating ? renderRating(p.rating, p.reviews || 0) : ''}
         <div class="pills mt-10">
-          <span class="pill">${p.category}</span>
-          ${(p.tags || []).slice(0,2).map(t=>`<span class="pill">${t}</span>`).join('')}
+          <span class="pill">${escapeHtml(p.category)}</span>
+          ${(p.tags || []).slice(0,2).map(t=>`<span class="pill">${escapeHtml(t)}</span>`).join('')}
         </div>
-        <p class="muted">${p.short}</p>
+        <p class="muted">${escapeHtml(p.short)}</p>
         <div class="split mt-10">
           <a class="btn" href="product.html?id=${encodeURIComponent(p.id)}">View Details</a>
-          <button class="btn primary" data-add="${p.id}" type="button">Add to Cart</button>
+          <button class="btn primary" data-add="${escapeHtml(p.id)}" type="button">Add to Cart</button>
         </div>
       </div>
     </article>
@@ -158,15 +161,17 @@ function renderProductDetail(){
     return;
   }
 
+  const escapeHtml = (str) => String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  
   el.innerHTML = `
     <div class="grid">
       <div class="col-8">
         <div class="card">
-          <div class="h-eyebrow">${p.category}</div>
-          <h1 style="margin-top:10px;">${p.name}</h1>
-          <p class="lead">${p.details}</p>
+          <div class="h-eyebrow">${escapeHtml(p.category)}</div>
+          <h1 style="margin-top:10px;">${escapeHtml(p.name)}</h1>
+          <p class="lead">${escapeHtml(p.details)}</p>
           <div class="pills" style="margin-top:12px;">
-            ${(p.tags || []).map(t => `<span class="pill">${t}</span>`).join('')}
+            ${(p.tags || []).map(t => `<span class="pill">${escapeHtml(t)}</span>`).join('')}
           </div>
           <hr class="sep" />
           <div class="split">
@@ -262,7 +267,7 @@ function renderCartPage(){
       showConfirmModal(`Remove "${productName}" from your cart?`, () => {
         removeFromCart(id);
         showSuccessModal(`"${productName}" removed from cart.`);
-        renderCartPage();
+        setTimeout(() => renderCartPage(), 0);
       });
     });
   });
@@ -280,7 +285,7 @@ function renderCartPage(){
         inp.value = '99';
       }
       updateQty(id, qty);
-      renderCartPage();
+      setTimeout(() => renderCartPage(), 0);
     });
   });
 
@@ -367,6 +372,15 @@ function handleCheckout(){
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    
+    // Verify user interaction
+    if(!e.isTrusted){
+      const msg = document.getElementById('page-message');
+      msg.textContent = 'Invalid request.';
+      msg.className = 'notice danger';
+      return;
+    }
+    
     const cart = getCart();
     if(cart.length === 0){
       const msg = document.getElementById('page-message');
@@ -407,14 +421,19 @@ function handleCheckout(){
       totals: calcTotals(appliedDiscount),
       status: "Processing"
     };
-    localStorage.setItem('ps_last_order', JSON.stringify(payload));
-    // Create a tiny order index for lookup
-    const idx = JSON.parse(localStorage.getItem('ps_order_index') || '[]');
-    idx.unshift({ orderId, email: payload.customer.email, status: payload.status, createdAt: now });
-    localStorage.setItem('ps_order_index', JSON.stringify(idx.slice(0, 25)));
-    // Clear cart and redirect
-    setCart([]);
-    location.href = `confirmation.html?orderId=${encodeURIComponent(orderId)}`;
+    try{
+      localStorage.setItem('ps_last_order', JSON.stringify(payload));
+      // Create a tiny order index for lookup
+      const idx = JSON.parse(localStorage.getItem('ps_order_index') || '[]');
+      idx.unshift({ orderId, email: payload.customer.email, status: payload.status, createdAt: now });
+      localStorage.setItem('ps_order_index', JSON.stringify(idx.slice(0, 25)));
+      setCart([]);
+      location.href = `confirmation.html?orderId=${encodeURIComponent(orderId)}`;
+    }catch(e){
+      const msg = document.getElementById('page-message');
+      msg.textContent = 'Unable to process order. Please try again.';
+      msg.className = 'notice danger';
+    }
   });
 }
 
@@ -502,6 +521,12 @@ function handleOrderLookup(){
     const orderId = document.getElementById('orderId').value.trim().toUpperCase();
     const email = document.getElementById('orderEmail').value.trim().toLowerCase();
     
+    // Verify user interaction
+    if(!e.isTrusted){
+      result.innerHTML = `<div class="notice danger">Invalid request.</div>`;
+      return;
+    }
+    
     // Basic validation
     if(!orderId || !email){
       result.innerHTML = `<div class="notice danger">Please enter both Order ID and Email.</div>`;
@@ -514,7 +539,7 @@ function handleOrderLookup(){
       return;
     }
 
-    const match = index.find(x => x.orderId.toUpperCase() === orderId && (x.email || '').toLowerCase() === email);
+    const match = index.find(x => x.orderId === orderId && (x.email || '').toLowerCase() === email);
     if(!match){
       result.innerHTML = `<div class="notice danger">No matching order found in this browser. Tip: complete checkout first.</div>`;
       return;

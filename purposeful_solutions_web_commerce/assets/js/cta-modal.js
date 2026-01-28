@@ -1,5 +1,5 @@
-// CTA Modal
-const showCTAModal = () => {
+function showCTAModal() {
+  if(document.querySelector('.modal-overlay')) return;
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.innerHTML = `
@@ -15,11 +15,13 @@ const showCTAModal = () => {
   
   const laterBtn = overlay.querySelector('#cta-later');
   if(laterBtn){
-    laterBtn.addEventListener('click', () => overlay.remove());
+    laterBtn.addEventListener('click', (e) => {
+      if(e.isTrusted) overlay.remove();
+    });
   }
   
   overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) overlay.remove();
+    if (e.target === overlay && e.isTrusted) overlay.remove();
   });
   
   document.body.appendChild(overlay);
