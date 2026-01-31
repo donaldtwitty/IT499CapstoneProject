@@ -1095,3 +1095,35 @@ footer.site-footer{
   color: var(--secondary);
   font-weight: 600;
 }
+
+/* Product placeholder */
+.placeholder-image{
+  background: #f0f0f0;
+  height: 200px;
+}
+
+/* Large button variant */
+.btn-large{
+  padding: 14px 32px;
+  font-size: 16px;
+}
+
+/* Full width button */
+.btn-full{
+  width: 100%;
+}
+
+/* Button with margin bottom */
+.btn-mb{
+  margin-bottom: 10px;
+}
+
+/* Button aligned to flex-end */
+.btn-align-end{
+  align-self: flex-end;
+}
+
+/* Split with center justify */
+.split-center{
+  justify-content: center;
+}

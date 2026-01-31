@@ -7,15 +7,92 @@
   <meta name="keywords" content="buy digital products, web templates, branding kits, SEO tools, ecommerce templates" />
   <title>Shop Digital Products & Templates | Purposeful Solutions</title>
   <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="preload" href="assets/css/styles.css" as="style" />
+  <link rel="preload" href="assets/js/app.js" as="script" />
+  <link rel="preload" href="assets/img/logo.png" as="image" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
   <link rel="stylesheet" href="assets/css/styles.css" />
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Purposeful Solutions",
+    "url": "https://www.purposefulsolutions.com",
+    "logo": "https://www.purposefulsolutions.com/assets/img/favicon.png",
+    "description": "Shop premium digital products, web templates, and professional services. Fast delivery, secure checkout, and expert support.",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.7",
+      "reviewCount": "150",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "author": {
+          "@type": "Person",
+          "name": "Sarah Mitchell"
+        },
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5"
+        },
+        "reviewBody": "The templates are absolutely stunning and saved me weeks of development time. Best purchase I've made this year!"
+      },
+      {
+        "@type": "Review",
+        "author": {
+          "@type": "Person",
+          "name": "James Davis"
+        },
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5"
+        },
+        "reviewBody": "Outstanding quality and excellent customer support. The SEO tools helped increase my site traffic by 300%!"
+      },
+      {
+        "@type": "Review",
+        "author": {
+          "@type": "Person",
+          "name": "Emily Wilson"
+        },
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5"
+        },
+        "reviewBody": "Professional products at affordable prices. The instant delivery and lifetime updates make it a no-brainer."
+      }
+    ]
+  }
+  </script>
 </head>
 <body data-page="index">
   <!-- Promotional Banner -->
   <div class="promo-banner">
-    🎉 Limited Time Offer: Get 20% OFF on all digital products! Use code: SAVE20
+    <i class="fa-solid fa-gift"></i> Limited Time Offer: Get 20% OFF on all digital products! Use code: SAVE20
   </div>
-  <div id="site-header"></div>
+  <div id="site-header">
+    <noscript>
+      <header class="site-header">
+        <div class="container">
+          <nav class="navbar">
+            <a href="index.html" class="brand">Purposeful Solutions</a>
+            <div class="nav-links">
+              <a href="index.html">Home</a>
+              <a href="products.html">Products</a>
+              <a href="cart.html">Cart</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+    </noscript>
+  </div>
   <main id="main" class="container" role="main" tabindex="-1">
     
 <section class="hero">
@@ -26,29 +103,29 @@
       Shop high-quality digital products, web templates, and professional services. Instant access, lifetime updates, and expert support included.
     </p>
     <div class="split mt-14">
-      <a class="btn primary" href="products.html" style="padding: 14px 32px; font-size: 16px;">Shop Now →</a>
+      <a class="btn primary btn-large" href="products.html">Shop Now →</a>
       <a class="btn" href="#featured-products">View Best Sellers</a>
     </div>
     <div class="trust-badges mt-14">
-      <span class="trust-item">✓ Instant Download</span>
-      <span class="trust-item">✓ Secure Checkout</span>
-      <span class="trust-item">✓ 30-Day Guarantee</span>
-      <span class="trust-item">✓ 24/7 Support</span>
+      <span class="trust-item"><i class="fa-solid fa-download"></i> Instant Download</span>
+      <span class="trust-item"><i class="fa-solid fa-shield-halved"></i> Secure Checkout</span>
+      <span class="trust-item"><i class="fa-solid fa-circle-check"></i> 30-Day Guarantee</span>
+      <span class="trust-item"><i class="fa-solid fa-headset"></i> 24/7 Support</span>
     </div>
     <div class="payment-icons">
-      <span class="payment-icon">💳 Visa</span>
-      <span class="payment-icon">💳 Mastercard</span>
-      <span class="payment-icon">💳 PayPal</span>
-      <span class="payment-icon">🔒 SSL Secure</span>
+      <span class="payment-icon"><i class="fa-brands fa-cc-visa"></i> Visa</span>
+      <span class="payment-icon"><i class="fa-brands fa-cc-mastercard"></i> Mastercard</span>
+      <span class="payment-icon"><i class="fa-brands fa-cc-paypal"></i> PayPal</span>
+      <span class="payment-icon"><i class="fa-solid fa-lock"></i> Secure Checkout</span>
     </div>
   </div>
   <div class="card">
     <div class="footer-title">Why Shop With Us</div>
     <div class="kpis mt-12">
       <div class="kpi">
-        <div class="label">Products</div>
-        <div class="value">8+</div>
-        <div class="hint">Ready to buy</div>
+        <div class="label">Customers</div>
+        <div class="value">1,000+</div>
+        <div class="hint">Satisfied buyers</div>
       </div>
       <div class="kpi">
         <div class="label">Rating</div>
@@ -76,27 +153,43 @@
     </div>
     <a class="btn" href="products.html">View All Products →</a>
   </div>
-  <div id="featured-grid" class="product-grid mt-14"></div>
+  <div id="featured-grid" class="product-grid mt-14">
+    <div class="product-card placeholder">
+      <div class="product-image placeholder-image"></div>
+      <h3>Loading products...</h3>
+      <p class="muted small">Please wait</p>
+    </div>
+    <div class="product-card placeholder">
+      <div class="product-image placeholder-image"></div>
+      <h3>Loading products...</h3>
+      <p class="muted small">Please wait</p>
+    </div>
+    <div class="product-card placeholder">
+      <div class="product-image placeholder-image"></div>
+      <h3>Loading products...</h3>
+      <p class="muted small">Please wait</p>
+    </div>
+  </div>
 </section>
 
 <section class="grid mt-20">
   <div class="col-4">
     <div class="card text-center">
-      <div class="icon-large">🚀</div>
+      <div class="icon-large" aria-label="Rocket icon"><i class="fa-solid fa-rocket" aria-hidden="true"></i></div>
       <h3>Instant Delivery</h3>
       <p class="small">Download immediately after purchase. No waiting, no shipping fees.</p>
     </div>
   </div>
   <div class="col-4">
     <div class="card text-center">
-      <div class="icon-large">🔒</div>
+      <div class="icon-large" aria-label="Lock icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></div>
       <h3>Secure Checkout</h3>
       <p class="small">SSL encrypted payment processing. Your data is safe with us.</p>
     </div>
   </div>
   <div class="col-4">
     <div class="card text-center">
-      <div class="icon-large">💯</div>
+      <div class="icon-large" aria-label="Money transfer icon"><i class="fa-solid fa-money-bill-transfer" aria-hidden="true"></i></div>
       <h3>Money-Back Guarantee</h3>
       <p class="small">30-day refund policy. Shop with confidence, risk-free.</p>
     </div>
@@ -114,7 +207,7 @@
         The templates are absolutely stunning and saved me weeks of development time. Best purchase I've made this year!
       </div>
       <div class="testimonial-author">
-        <div class="testimonial-avatar">SM</div>
+        <div class="testimonial-avatar" aria-label="Sarah Mitchell avatar">SM</div>
         <div class="testimonial-info">
           <div class="testimonial-name">Sarah Mitchell</div>
           <div class="testimonial-role">Web Designer</div>
@@ -126,7 +219,7 @@
         Outstanding quality and excellent customer support. The SEO tools helped increase my site traffic by 300%!
       </div>
       <div class="testimonial-author">
-        <div class="testimonial-avatar">JD</div>
+        <div class="testimonial-avatar" aria-label="James Davis avatar">JD</div>
         <div class="testimonial-info">
           <div class="testimonial-name">James Davis</div>
           <div class="testimonial-role">Marketing Manager</div>
@@ -138,7 +231,7 @@
         Professional products at affordable prices. The instant delivery and lifetime updates make it a no-brainer.
       </div>
       <div class="testimonial-author">
-        <div class="testimonial-avatar">EW</div>
+        <div class="testimonial-avatar" aria-label="Emily Wilson avatar">EW</div>
         <div class="testimonial-info">
           <div class="testimonial-name">Emily Wilson</div>
           <div class="testimonial-role">Entrepreneur</div>
@@ -149,11 +242,28 @@
 </section>
 
   </main>
-  <div id="site-footer"></div>
+  <div id="site-footer">
+    <noscript>
+      <footer class="site-footer">
+        <div class="container">
+          <div class="footer-grid">
+            <div>
+              <div class="footer-title">Purposeful Solutions</div>
+              <p class="small">Premium digital products and professional services.</p>
+            </div>
+            <div>
+              <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="cart.html">Cart</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </noscript>
+  </div>
 
-  <script type="module" src="assets/js/common.js"></script>
-  <script type="module" src="assets/js/features.js"></script>
-  <script type="module" src="assets/js/pages.js"></script>
-  <script src="assets/js/cta-modal.js"></script>
+  <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>
