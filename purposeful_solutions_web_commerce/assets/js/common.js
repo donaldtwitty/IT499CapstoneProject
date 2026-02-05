@@ -274,7 +274,6 @@ function injectHeaderFooter(){
               <div class="footer-links">
                 <a href="faq.html">FAQ</a>
                 <a href="order-status.html">Track Order</a>
-                <a href="changelog.html">What's New</a>
               </div>
               <p class="small mt-10">
                 © ${year} Purposeful Solutions. All rights reserved.
